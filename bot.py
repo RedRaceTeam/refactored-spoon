@@ -16,10 +16,7 @@ dp.include_router(commands_router)
 dp.include_router(business_router)
 
 async def on_startup():
-    await bot.set_webhook(
-        url=f"{settings.WEBHOOK_URL}/webhook",
-        secret_token=settings.WEBHOOK_SECRET
-    )
+    await bot.set_webhook(url=f"{settings.WEBHOOK_URL}/webhook")
     logging.info(f"✅ Webhook set to {settings.WEBHOOK_URL}/webhook")
 
 async def handle_root(request):
@@ -31,8 +28,7 @@ def main():
     
     SimpleRequestHandler(
         dispatcher=dp,
-        bot=bot,
-        secret_token=settings.WEBHOOK_SECRET
+        bot=bot
     ).register(app, path='/webhook')
     
     setup_application(app, dp, bot=bot)
