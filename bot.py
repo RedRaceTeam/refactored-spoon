@@ -1,6 +1,6 @@
 import logging
 from aiogram import Bot, Dispatcher
-from aiogram.webhook.aiohttp_server import SimpleWebhookResponse, setup_application
+from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 from aiohttp import web
 
 from core.config import settings
@@ -20,8 +20,16 @@ async def on_startup():
 
 def main():
     app = web.Application()
-    app.router.add_post("/webhook", SimpleWebhookResponse(bot, dp))
+
+    # Регистрируем обработчик вебхука
+    SimpleRequestHandler(
+        dispatcher=dp,
+        bot=bot,
+    ).register(app, path='/webhook')
+
+    # Настраиваем приложение
     setup_application(app, dp, bot=bot)
+
     web.run_app(app, host="0.0.0.0", port=settings.PORT)
 
 if __name__ == "__main__":
